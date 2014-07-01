@@ -1,0 +1,221 @@
+<html>
+  <head> 
+    <!-- JQuery -->
+    <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+
+    
+
+<style type="text/css">
+
+.p { font-family: calibri; }
+
+.h1 {font-family: calibri;}
+
+.tg-left { text-align: left; } .tg-right { text-align: right; } .tg-center { text-align: left; }
+
+.tg-bf { font-weight: bold; } .tg-it { font-style: italic; }
+
+.zag-table-plain { border-collapse: collapse; border-spacing: 0; font-size: 100%; font-family: calibri;}
+
+.zag-table-plain td, .tg-table-plain th { border: 1px #555 solid; padding: 10px; vertical-align: top; }
+
+</style>
+
+    <script>   
+	
+	$(document).ready(function() {
+	
+	/* Compute what day of the week it is.
+	   This function is used to determine which shift is scheduled to work on which days
+	   Each shift is a FIFO queue that is set according the day of the year
+	*/   
+	Date.prototype.getDOY = function() {
+	var onejan = new Date(this.getFullYear(),0,1);
+	return Math.ceil((this - onejan) / 86400000);
+	} 
+
+
+	function getDOW() {
+	dOW = new Date();
+	return dOW.getDay();
+	}
+		
+
+	// Get today's date
+	function ShowDate() { 
+	var dNow = new Date(); 
+	var utcdate = (dNow.getMonth()+ 1) + '/' + dNow.getDate() + '/' + dNow.getFullYear(); 
+	//$('#currentDate').text(utcdate) 
+	return utcdate
+	}
+
+	//Get the current week of year
+	Date.prototype.showWeek = function() {
+	var onejan = new Date(this.getFullYear(),0,1);
+	return Math.ceil((((this - onejan) / 86400000 ) + onejan.getDay() + 1) / 7);
+	}
+	
+	
+	// Is it odd?
+	function isOdd(num) {
+	return (num % 2) == 1;
+	}
+
+
+
+	function makeRocketGo() {
+	
+	var imOddSet = {
+          0 : ["Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts"],
+          1 : ["Bill Krause", "Robert Drury", "John Allen","Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts"],
+          2 : ["Mark McFann", "Alex De Los Santos", "John Allen","Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts"],
+          3 : ["Bill Krause", "John Allen", "Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts"],
+          4 : ["Alex De Los Santos", "Andrew Chickadel", "Shane Whye", "Rob Whisler", "Alena Madric", "Mike Sancranti", "Bill Krause", "Robert Drury", "Rey Zambrano", "Mark McFann"],
+          5 : ["Rey Zambrano", "Mark McFann", "Alex De Los Santos", "Andrew Chickadel", "Shane Whye", "Rob Whisler", "Alena Madric", "Mike Sancranti", "Bill Krause", "Robert Drury"],
+          6 : ["Andrew Chickadel", "Shane Whye", "Rob Whisler", "Alena Madric", "Mike Sancranti", "Rey Zambrano"]
+        };
+        
+
+        var imEvenSet = {
+          0 : ["Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts", "Greg Stein"],
+          1 : ["Bill Krause", "Robert Drury", "John Allen","Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts"],
+          2 : ["Mark McFann", "Alex De Los Santos", "John Allen","Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts"],
+          3 : ["John Allen", "Greg Stein", "Kevin McGregor", "Bill Fuscaldo", "Kim Russell", "Abi Kurian", "Ben Slutzky", "Rebecca Roberts", "Bill Krause"],
+          4 : ["Rey Zambrano", "Mark McFann", "Alex De Los Santos", "Andrew Chickadel", "Shane Whye", "Rob Whisler", "Alena Madric", "Mike Sancranti", "Bill Krause", "Robert Drury", "John Allen"],
+          5 : ["Mark McFann", "Alex De Los Santos", "Andrew Chickadel", "Shane Whye", "Rob Whisler", "Alena Madric", "Mike Sancranti", "Bill Krause", "Robert Drury", "Rey Zambrano"],
+          6 : ["Shane Whye", "Rob Whisler", "Alena Madric", "Mike Sancranti", "Rey Zambrano", "Andrew Chickadel"]
+
+        };
+
+	/**
+	 * Randomize array element order in-place.
+	 * Using Fisher-Yates shuffle algorithm.
+	function shuffleArray(array) {
+	for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    	}
+    return array;
+	}  **/
+	
+	if(oddWeek == true) {
+	  var soupy = getDOW();
+	  var onShift = imOddSet[soupy];
+
+	// Fisher-Yates randomization algorithm
+	  for (var pickens = onShift.length - 1; pickens > 0; pickens--) {
+	    var jay = Math.floor(Math.random() * (pickens + 1));
+	    var temp = onShift[pickens];
+            onShift[pickens] = onShift[jay];
+            onShift[jay] = temp;
+	  }
+	 // var shifted = onShift.shift();
+	 // onShift.push(shifted);
+	  return onShift
+	} else {
+	  var soupy = getDOW();
+	  var onShift = imEvenSet[soupy];
+
+	// Fisher-Yates randomization algorithm
+          for (var pickens = onShift.length - 1; pickens > 0; pickens--) {
+            var jay = Math.floor(Math.random() * (pickens + 1));
+            var temp = onShift[pickens];
+            onShift[pickens] = onShift[jay];
+            onShift[jay] = temp;
+	  }
+	  //var shifted = onShift.shift();
+	  //onShift.push(shifted);
+	  return onShift;
+	};
+	}
+
+
+	function makeTable(arr) {
+	
+	var content = '<table class="zag-table-plain">';
+	//document.getElementById("tableSpace").innerHTML='<table id="main">';
+	content += '<tr><th>IM Line Up</th></tr>';
+	var i=0;
+	while(i < arr.length) { 
+	content += '<tr><td>' + arr[i] + '</td></tr>';
+	i++;
+	}
+	content += '</table>';
+	console.log(content);
+	return document.getElementById("tableSpace").innerHTML=content;
+	}
+
+
+	$(function() { $("#datePicker").hide().datepicker().slideDown("slow"); });
+
+	
+	//var $j = jQuery.noConflict();
+	//$("#datePicker").datepicker();
+
+	var today = new Date();
+	var tWeek = new Date();
+	var daynum = today.getDOY();
+	var weekNumber = tWeek.showWeek();
+	var oddWeek = isOdd(tWeek.showWeek());
+	//var dNum = getDOW();
+	var dNum = makeRocketGo();
+	//var newDnum = dNum[3];
+
+	
+	// display output
+	
+	$("#currentDate").hide().append(ShowDate).slideDown("slow");
+	$("#dayNum").hide().append(daynum).slideDown("slow");
+	$("#weekNum").hide().append(weekNumber).slideDown();
+	//$("#oddWeek").append(oddWeek);
+	$("#todayLineUp").text(dNum);
+	//$("array2Table").text(makeTable(dNum));
+	$("#tableSpace").hide().html(makeTable(dNum)).fadeIn();
+	//$("#todayLineUp").text(newDnum);
+	//$("#table_id").dataTable( { "data" : [dNum] } );
+	//$("#datePicker").datepicker();
+
+	//console.log("Is week odd? " + isOdd(oddWeek));  //debug area
+
+	
+	
+	});
+		
+	</script>
+  </head> 
+  <body>   
+    <h1>CCB PAC IM Lineup</h1> 
+	<!-- <p>Date: <input type="text" id="datePicker"></p> -->
+
+	<p id="currentDate">Today: </p> 	
+		
+	<p id="dayNum">Day number: </p>
+
+	<p id="weekNum">Week number: </p>
+
+	<!-- <p id="oddWeek">Is odd? </p>
+	
+	<h3>Today's lineup</h3>
+	<p id="todayLineUp"></p> -->
+
+	<!-- <div id="array2Table"></div>  -->
+	
+	<div id="tableSpace"></div> 
+
+
+
+
+	
+  </body> 
+</html> 
+
+
